@@ -6,8 +6,10 @@
 FileOrganizer is a command-line tool designed to help you manage and organize your files efficiently. Whether you need to sort files by type, move them to different directories, or clean up your file system, FileOrganizer provides a simple yet powerful set of commands to streamline these tasks.
 
 <p align="center"> 
-    <a href="./util/before.png" target="_blank"> <img src="./util/before.png" width="60%" /> 
-    </a> <a href="util/after.png" target="_blank"> <img src="util/after.png" width="60%" /> </a> </p> <p align="center"> <em>Before running FileOrganizer</em> | <em>After running FileOrganizer</em> 
+<em>Before running FileOrganizer</em>
+    <a href="./util/before.png" target="_blank"> 
+    <img src="./util/before.png" width="120%" /> 
+    </a> <em>After running FileOrganizer</em> <a href="util/after.png" target="_blank"> <img src="util/after.png" width="120%" /> </a> </p> <p align="center"> 
 </p> <br>
 
 ### Example Usage
@@ -30,9 +32,9 @@ You can also use the following commands:
 
 ## Download and Installation
 
-You can download the latest release from the [Release Versions](https://github.com/yourusername/FileOrganizer/releases) page.
+You can download the latest release from the [Release Versions](https://github.com/karnikhil90/FileOrganizer/releases) page.
 
-For regular updates, visit the [Tags](https://github.com/yourusername/FileOrganizer/tags) section of the repository.
+For regular updates, visit the [Tags](https://github.com/karnikhil90/FileOrganizer/tags) section of the repository.
 
 ## License
 
