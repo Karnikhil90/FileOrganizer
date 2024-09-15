@@ -1,0 +1,11 @@
+# code editor setup
+.vscode
+
+# directory for making .py to .exe
+build
+dist
+setup.py
+
+# test and processed data
+*.spec
+*.exe
