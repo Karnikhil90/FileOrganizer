@@ -26,7 +26,7 @@ class FileOrganised:
         """
         self.file_types = file_types if file_types is not None else FILE_TYPES
 
-    def organize_files(self, directory: str = './'):
+    def organize_files(self, directory: str = './', selected_extensions: list = None, all_extensions: bool = False):
         """
         Organizes files from the given directory into specific folders based on the file extensions.
         """
@@ -36,11 +36,19 @@ class FileOrganised:
                 continue
             file_extension = filename.split('.')[-1].lower()
 
-            # Find the folder based on the extension
-            for folder, extensions in self.file_types.items():
-                if file_extension in extensions:
-                    self.move_file_to_folder(filename, folder, directory)
-                    break
+            if all_extensions:
+                # Create a folder for each unique file extension
+                self.move_file_to_folder(filename, file_extension, directory)
+            elif selected_extensions:
+                # If specific extensions are provided, only organize those
+                if file_extension in selected_extensions:
+                    self.move_file_to_folder(filename, file_extension, directory)
+            else:
+                # Default handling based on the predefined file types
+                for folder, extensions in self.file_types.items():
+                    if file_extension in extensions:
+                        self.move_file_to_folder(filename, folder, directory)
+                        break
 
     def move_file_to_folder(self, filename, folder, directory):
         """
@@ -65,12 +73,21 @@ def main():
 
     # Location option
     parser.add_argument('-l', '--location', type=str, default='./', help="Specify directory to organize")
+    # Selected extensions option
+    parser.add_argument('-s', '--select', type=str, help="Specify extensions to move only those files, e.g., -s 'png,jpg'")
+    # All extensions option to create folders for each file extension
+    parser.add_argument('-a', '--all', action='store_true', help="Create a new directory for each file extension")
 
     args = parser.parse_args()
 
+    # Parse selected extensions if provided
+    selected_extensions = []
+    if args.select:
+        selected_extensions = [ext.strip() for ext in args.select.split(',')]
+
     # Create the FileOrganised object and organize the files
     organizer = FileOrganised(FILE_TYPES)
-    organizer.organize_files(args.location)
+    organizer.organize_files(args.location, selected_extensions, args.all)
 
 try:
     main()
