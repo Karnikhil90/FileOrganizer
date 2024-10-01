@@ -19,6 +19,15 @@ FILE_TYPES = {
     "others": ["iso", "dmg", "torrent"]
 }
 
+VERSION_INFO = """
+FileOrganizer v2.1
+Developed by Nikhil Karmakar
+
+FileOrganizer is a command-line tool designed to help you manage and organize your files efficiently. 
+Whether you need to sort files by type, move them to different directories, or clean up your file system, 
+FileOrganizer provides a simple yet powerful set of commands to streamline these tasks.
+"""
+
 class FileOrganised:
     def __init__(self, file_types=None):
         """
@@ -77,8 +86,15 @@ def main():
     parser.add_argument('-s', '--select', type=str, help="Specify extensions to move only those files, e.g., -s 'png,jpg'")
     # All extensions option to create folders for each file extension
     parser.add_argument('-a', '--all', action='store_true', help="Create a new directory for each file extension")
+    # Version option
+    parser.add_argument('-v', '--version', action='store_true', help="Show version information and exit")
 
     args = parser.parse_args()
+
+    # Show version information and exit
+    if args.version:
+        print(VERSION_INFO)
+        return
 
     # Parse selected extensions if provided
     selected_extensions = []

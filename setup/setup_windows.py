@@ -25,30 +25,28 @@ def create_directory_structure():
     return main_dir, bin_dir  # Return both directories
 
 def move_executable(bin_dir):
-    """Move the FO.exe file to the bin directory."""
-    source_path = 'FO.exe'  # Ensure this script is in the same directory as FO.exe
+    """Move the FO.exe file from the ./app/ directory to the bin directory."""
+    current_dir = os.path.dirname(os.path.abspath(__file__))  # Get the current directory where the script is located
+    source_path = os.path.join(current_dir, 'app', 'FO.exe')  # Locate FO.exe in ./app/ folder
     destination_path = os.path.join(bin_dir, 'FO.exe')
 
     try:
-        shutil.move(source_path, destination_path)
-        print(f"Moved FO.exe to {destination_path}")
-    except FileNotFoundError:
-        print("FO.exe not found. Please ensure it is in the same directory as this script.")
+        if os.path.exists(source_path):
+            shutil.move(source_path, destination_path)
+            print(f"Moved FO.exe to {destination_path}")
+        else:
+            print(f"FO.exe not found at {source_path}. Please ensure it is in the 'app' directory.")
     except Exception as e:
         print(f"Error moving FO.exe: {e}")
 
-def set_global_environment_variable():
-    """Set a global environment variable for the application."""
-    variable_name = 'FILE_ORGANIZER_PATH'
-    variable_value = r'C:\FileOrganizer_v2\bin'
-
+def add_bin_to_system_path(bin_dir):
+    """Add the bin directory to the system's Path variable permanently."""
     try:
-        os.environ[variable_name] = variable_value
-        # Use 'setx' command to set the variable globally
-        os.system(f'setx {variable_name} "{variable_value}"')
-        print(f"Set global environment variable: {variable_name} = {variable_value}")
+        # Use 'setx' to append bin_dir to the system Path variable
+        os.system(f'setx /M Path "%Path%;{bin_dir}"')  # /M ensures it's for the system, not user
+        print(f"Added {bin_dir} to the system Path variable")
     except Exception as e:
-        print(f"Error setting environment variable: {e}")
+        print(f"Error adding {bin_dir} to the system Path variable: {e}")
 
 def prompt_for_reboot():
     """Prompt the user to reboot the system."""
@@ -67,8 +65,7 @@ def main():
 
     main_dir, bin_dir = create_directory_structure()  # Capture both return values
     move_executable(bin_dir)
-    set_global_environment_variable()
+    add_bin_to_system_path(bin_dir)  # Add the bin directory to system Path
     prompt_for_reboot()
 
-if __name__ == "__main__":
-    main()
+main()
