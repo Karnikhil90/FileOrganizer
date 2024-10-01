@@ -1,5 +1,5 @@
 
-# FileOrganizer -v2.0
+# FileOrganizer -v2.1
 
 ## What does it do?
 
