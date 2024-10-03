@@ -4,7 +4,7 @@ import argparse
 
 # Global file types dictionary
 FILE_TYPES = {
-    "images": ["png", "jpg", "jpeg", "gif", "bmp", "svg", "tiff", "ico"],
+    "images": ["png", "jpg", "jpeg", "gif", "bmp", "svg", "tiff", "ico" ,"webp"],
     "music": ["mp3", "wav", "flac", "aac", "ogg", "m4a"],
     "videos": ["mp4", "mkv", "mov", "avi", "flv", "wmv", "webm"],
     "documents": ["txt", "pdf", "doc", "docx", "odt", "rtf", "md", "epub"],
@@ -15,13 +15,15 @@ FILE_TYPES = {
     "code": ["py", "js", "html", "css", "java", "c", "cpp", "h", "rb", "php", "go", "ts"],
     "databases": ["sql", "db", "sqlite", "mdb", "accdb"],
     "fonts": ["ttf", "otf", "woff", "woff2"],
-    "scripts": ["js", "php", "py", "sh", "bat", "rb"],
+    "scripts": ["js", "php","sh", "bat", "rb"],
     "others": ["iso", "dmg", "torrent"]
 }
 
 VERSION_INFO = """
-FileOrganizer v2.1
-Developed by Nikhil Karmakar
+        ===========================
+             FileOrganizer v2.1
+        Developed by Nikhil Karmakar
+        ===========================
 
 FileOrganizer is a command-line tool designed to help you manage and organize your files efficiently. 
 Whether you need to sort files by type, move them to different directories, or clean up your file system, 
