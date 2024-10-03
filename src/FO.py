@@ -18,17 +18,18 @@ FILE_TYPES = {
     "scripts": ["js", "php","sh", "bat", "rb"],
     "others": ["iso", "dmg", "torrent"]
 }
+CURRENT_VERSION :str = 'FileOrganizer v2.1'
 
 VERSION_INFO = """
         ===========================
-             FileOrganizer v2.1
+             {0}
         Developed by Nikhil Karmakar
         ===========================
 
 FileOrganizer is a command-line tool designed to help you manage and organize your files efficiently. 
 Whether you need to sort files by type, move them to different directories, or clean up your file system, 
 FileOrganizer provides a simple yet powerful set of commands to streamline these tasks.
-"""
+""".format(CURRENT_VERSION)
 
 class FileOrganised:
     def __init__(self, file_types=None):
@@ -80,7 +81,7 @@ class FileOrganised:
 
 # Main function to handle command-line arguments
 def main():
-    parser = argparse.ArgumentParser(description="File Organizer CLI")
+    parser = argparse.ArgumentParser(description=f"{CURRENT_VERSION}")
 
     # Location option
     parser.add_argument('-l', '--location', type=str, default='./', help="Specify directory to organize")
