@@ -32,23 +32,21 @@ Overview:
 
 In summary, this script ensures simple version updates and extensibility without requiring code modifications for each new release.
 """
-
 import os
 import sys
 import shutil
 import platform
 
-# Current version of the software
-CURRENT_VERSION: str = 'FileOrganizer_21'
-
-# List of older versions to remove if found
-OLD_VERSIONS: list[str] = [
-    'FileOrganizer - v1.0',
-    'FileOrganizer_v2',
-]
-
-# Main software directory where all files will be copied
-SOFTWARE_DIR : str = 'bin'
+# Configuration constants
+CONFIG : dict[str,any]= {
+    'CURRENT_VERSION': 'FileOrganizer_21',
+    'OLD_VERSIONS': [
+        'FileOrganizer - v1.0',
+        'FileOrganizer_v2',
+    ],
+    'SOFTWARE_DIR': 'bin',
+    'UTIL_FILE': 'util',
+}
 
 def is_windows() -> bool:
     """Check if the current operating system is Windows."""
@@ -76,15 +74,16 @@ def create_directory_structure(version: str) -> tuple[str, str]:
 
     return main_dir, bin_dir
 
-def remove_old_versions(old_versions: list[str]) -> None:
-    """Remove old version directories if found.
-
-    Args:
-        old_versions (list[str]): A list of old version directories to remove.
-    """
+def backup_old_versions(old_versions: list[str]) -> None:
+    """Backup old version directories before removing them."""
+    backup_dir = 'C://Backups'
+    os.makedirs(backup_dir, exist_ok=True)
+    
     for version in old_versions:
         old_version_dir = f'C://{version}'
         if os.path.exists(old_version_dir):
+            shutil.copytree(old_version_dir, os.path.join(backup_dir, version), dirs_exist_ok=True)
+            print(f"Backed up {version} to {backup_dir}")
             shutil.rmtree(old_version_dir)
             print(f"Removed old version directory: {old_version_dir}")
 
@@ -96,10 +95,10 @@ def copy_all_files(bin_dir: str) -> None:
     """
     try:
         # Ensure the software directory exists
-        if os.path.exists(SOFTWARE_DIR):
+        if os.path.exists(CONFIG['SOFTWARE_DIR']):
             # Iterate through all files in SOFTWARE_DIR
-            for item in os.listdir(SOFTWARE_DIR):
-                source_path = os.path.join(SOFTWARE_DIR, item)
+            for item in os.listdir(CONFIG['SOFTWARE_DIR']):
+                source_path = os.path.join(CONFIG['SOFTWARE_DIR'], item)
                 destination_path = os.path.join(bin_dir, item)
                 
                 if os.path.isfile(source_path):
@@ -109,22 +108,42 @@ def copy_all_files(bin_dir: str) -> None:
                     shutil.copytree(source_path, destination_path, dirs_exist_ok=True)
                     print(f"Copied directory {source_path} to {destination_path}")
         else:
-            print(f"{SOFTWARE_DIR} not found. Please ensure it is present.")
+            print(f"{CONFIG['SOFTWARE_DIR']} not found. Please ensure it is present.")
     except Exception as e:
         print(f"Error copying files: {e}")
 
+def copy_util_files(main_dir: str) -> None:
+    """Copy util files to the main directory for the current version."""
+    if os.path.exists(CONFIG['UTIL_FILE']):
+        for item in os.listdir(CONFIG['UTIL_FILE']):
+            source_path = os.path.join(CONFIG['UTIL_FILE'], item)
+            destination_path = os.path.join(main_dir, item)
+            
+            if os.path.isfile(source_path):
+                shutil.copy2(source_path, destination_path)
+                print(f"Copied {source_path} to {destination_path}")
+            elif os.path.isdir(source_path):
+                shutil.copytree(source_path, destination_path, dirs_exist_ok=True)
+                print(f"Copied directory {source_path} to {destination_path}")
+    else:
+        print(f"{CONFIG['UTIL_FILE']} not found.")
+
 def add_bin_to_system_path(bin_dir: str) -> None:
-    """Add the bin directory to the system's Path variable permanently.
+    """Add the bin directory to the system's Path variable if not already present.
 
     Args:
         bin_dir (str): The bin directory path to add to system Path.
     """
-    try:
-        # Append bin_dir to the system Path variable
-        os.system(f'setx /M Path "%Path%;{bin_dir}"')
-        print(f"Added {bin_dir} to the system Path variable")
-    except Exception as e:
-        print(f"Error adding {bin_dir} to the system Path variable: {e}")
+    current_path = os.environ['PATH']
+    if bin_dir not in current_path:
+        try:
+            # Append bin_dir to the system Path variable
+            os.system(f'setx /M Path "%Path%;{bin_dir}"')
+            print(f"Added {bin_dir} to the system Path variable")
+        except Exception as e:
+            print(f"Error adding {bin_dir} to the system Path variable: {e}")
+    else:
+        print(f"{bin_dir} is already in the system Path.")
 
 def prompt_for_reboot() -> None:
     """Prompt the user to reboot the system."""
@@ -141,14 +160,17 @@ def main() -> None:
         print("This script is intended for Windows operating systems only.")
         sys.exit(1)
 
-    # Remove any old versions
-    remove_old_versions(OLD_VERSIONS)
+    # Backup and remove any old versions
+    backup_old_versions(CONFIG['OLD_VERSIONS'])
 
     # Create new directory structure based on current version
-    main_dir, bin_dir = create_directory_structure(CURRENT_VERSION)
+    main_dir, bin_dir = create_directory_structure(CONFIG['CURRENT_VERSION'])
 
     # Copy all files from the software directory to the bin directory
     copy_all_files(bin_dir)
+
+    # Copy util files to the main directory
+    copy_util_files(main_dir)
 
     # Add bin directory to system path
     add_bin_to_system_path(bin_dir)
