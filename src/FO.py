@@ -18,7 +18,7 @@ FILE_TYPES = {
     "scripts": ["js", "php","sh", "bat", "rb"],
     "others": ["iso", "dmg", "torrent"]
 }
-CURRENT_VERSION :str = 'FileOrganizer v2.1'
+CURRENT_VERSION :str = 'FileOrganizer v2.2'
 
 VERSION_INFO = """
         ===========================
@@ -79,6 +79,26 @@ class FileOrganised:
         except Exception as e:
             print(f"Error moving {filename}: {e}")
 
+
+"""
+The function `map_directory_to_extensions` converts a string input into a dictionary, 
+mapping a directory name to a list of file extensions.
+
+* in simple , From str to dictionary. key is the directory's name and value is file types
+Example:
+    user_input: "mydoc:txt,pdf" 
+    
+    Output: {'mydoc': ['txt', 'pdf']}
+"""
+
+
+def map_directory_to_extensions(user_input : str) -> dict[str:list[str]] | bool:
+    if ':' not in user_input : return False
+    directory, file_types = user_input.split(':')
+    return {directory: file_types.split(',')}
+print(map_directory_to_extensions("mydoc:txt,pdf"))
+
+
 # Main function to handle command-line arguments
 def main():
     parser = argparse.ArgumentParser(description=f"{CURRENT_VERSION}")
@@ -89,24 +109,34 @@ def main():
     parser.add_argument('-s', '--select', type=str, help="Specify extensions to move only those files, e.g., -s 'png,jpg'")
     # All extensions option to create folders for each file extension
     parser.add_argument('-a', '--all', action='store_true', help="Create a new directory for each file extension")
+   # Custom directory-extension mapping input
+    parser.add_argument('-m', '--map', type=str, help="Custom directory to extension mapping (e.g., 'images:jpg,png,gif')")
     # Version option
     parser.add_argument('-v', '--version', action='store_true', help="Show version information and exit")
 
     args = parser.parse_args()
-
-    # Show version information and exit
-    if args.version:
-        print(VERSION_INFO)
-        return
 
     # Parse selected extensions if provided
     selected_extensions = []
     if args.select:
         selected_extensions = [ext.strip() for ext in args.select.split(',')]
 
-    # Create the FileOrganised object and organize the files
-    organizer = FileOrganised(FILE_TYPES)
-    organizer.organize_files(args.location, selected_extensions, args.all)
+    # If custom directory-extension mapping is provided, map it
+    if args.map:
+        try:        
+            mapping = map_directory_to_extensions(args.map)
+        except:
+            print("ErrorType : Invalid Syntax for mapping input.")
+        if mapping:
+            # Create the FileOrganised object with the mapped extensions
+            organizer = FileOrganised(mapping)
+            organizer.organize_files(args.location, selected_extensions, args.all)
+        else:
+            print("ErrorType : Invalid Syntax for mapping input.")
+    else:
+        # If no mapping is provided, use the default file types
+        organizer = FileOrganised(FILE_TYPES)
+        organizer.organize_files(args.location, selected_extensions, args.all)
 
 try:
     main()
