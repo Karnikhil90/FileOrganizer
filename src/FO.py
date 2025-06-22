@@ -1,8 +1,10 @@
-import os
+import os , sys
 from shutil import move
-import argparse
+import argparse ,csv
+from FileAccess import FileAccess
+from datetime import datetime
 
-# Global file types dictionary
+# Global file types dictionary as falback
 FILE_TYPES = {
     "images": ["png", "jpg", "jpeg", "gif", "bmp", "svg", "tiff", "ico" ,"webp"],
     "music": ["mp3", "wav", "flac", "aac", "ogg", "m4a"],
@@ -21,42 +23,74 @@ FILE_TYPES = {
 CURRENT_VERSION :str = 'FileOrganizer v2.2'
 
 VERSION_INFO = """
-        ===========================
+======================================================
              {0}
         Developed by Nikhil Karmakar
-        ===========================
+======================================================
 
 FileOrganizer is a command-line tool designed to help you manage and organize your files efficiently. 
 Whether you need to sort files by type, move them to different directories, or clean up your file system, 
 FileOrganizer provides a simple yet powerful set of commands to streamline these tasks.
 """.format(CURRENT_VERSION)
 
+fallback_file_path_of_FileType = "FILE_TYPES.json"
+config_file_path= "config.json"
+
+
+file = FileAccess(config_file_path,True)
+config_:dict = file.read_json()
+config_filepath = config_.get("filepath",{})
+file_path_of_FileType = config_filepath.get("DEFAULT_FILE_TYPES", fallback_file_path_of_FileType)
+
+
 class FileOrganised:
-    def __init__(self, file_types=None):
-        """
-        Initializes the class with the provided file types or the default ones.
-        """
+    def __init__(self, file_types: str =None):
         self.file_types = file_types if file_types is not None else FILE_TYPES
+    def setFileType(self,file_type:dict[str, list[str]]):
+        self.file_types = file_type
+
+    def getFileType(self)-> dict[str, list[str]]:
+        return self.file_types
+    
+    def add_value_FileType(self, new_value: dict[str, list[str]]) -> bool:
+        added = False
+
+        for category, extensions in new_value.items():
+            if category in self.file_type:
+                for ext in extensions:
+                    if ext not in self.file_type[category]:
+                        self.file_type[category].append(ext)
+                        added = True
+            else:
+                self.file_type[category] = extensions.copy()
+                added = True
+
+        return added
+
+
 
     def organize_files(self, directory: str = './', selected_extensions: list = None, all_extensions: bool = False):
         """
         Organizes files from the given directory into specific folders based on the file extensions.
         """
+
         for filename in os.listdir(directory):
-            # Get the file extension (ignore hidden files starting with '.')
-            if filename.startswith('.'):
+            full_path = os.path.join(directory, filename)
+
+            # Skip hidden files and directories
+            if filename.startswith('.') or os.path.isdir(full_path):
                 continue
-            file_extension = filename.split('.')[-1].lower()
+
+            # Safely extract file extension
+            file_extension = os.path.splitext(filename)[1][1:].lower()  # Removes the dot
 
             if all_extensions:
-                # Create a folder for each unique file extension
+                # Folder name = extension
                 self.move_file_to_folder(filename, file_extension, directory)
             elif selected_extensions:
-                # If specific extensions are provided, only organize those
                 if file_extension in selected_extensions:
                     self.move_file_to_folder(filename, file_extension, directory)
             else:
-                # Default handling based on the predefined file types
                 for folder, extensions in self.file_types.items():
                     if file_extension in extensions:
                         self.move_file_to_folder(filename, folder, directory)
@@ -91,54 +125,113 @@ Example:
     Output: {'mydoc': ['txt', 'pdf']}
 """
 
-
+# utility funtion 
 def map_directory_to_extensions(user_input : str) -> dict[str:list[str]] | bool:
     if ':' not in user_input : return False
     directory, file_types = user_input.split(':')
     return {directory: file_types.split(',')}
-print(map_directory_to_extensions("mydoc:txt,pdf"))
+def cheak_FileType_json(file_type:dict={})-> bool:
+    size_of_keys = len(file_type.keys())
+    
+
+
+def log_command_entry(command: str):
+    log_file = config_filepath.get("MAPPING_HISTORY", "mapping_log.csv")
+    os.makedirs(os.path.dirname(log_file), exist_ok=True)
+
+    log_exists = os.path.isfile(log_file)
+
+    with open(log_file, mode='a', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        if not log_exists:
+            writer.writerow(['time', 'command'])
+        writer.writerow([datetime.now().isoformat(), command])
 
 
 # Main function to handle command-line arguments
 def main():
     parser = argparse.ArgumentParser(description=f"{CURRENT_VERSION}")
 
-    # Location option
     parser.add_argument('-l', '--location', type=str, default='./', help="Specify directory to organize")
-    # Selected extensions option
-    parser.add_argument('-s', '--select', type=str, help="Specify extensions to move only those files, e.g., -s 'png,jpg'")
-    # All extensions option to create folders for each file extension
-    parser.add_argument('-a', '--all', action='store_true', help="Create a new directory for each file extension")
-   # Custom directory-extension mapping input
-    parser.add_argument('-m', '--map', type=str, help="Custom directory to extension mapping (e.g., 'images:jpg,png,gif')")
-    # Version option
-    parser.add_argument('-v', '--version', action='store_true', help="Show version information and exit")
+    parser.add_argument('-s', '--select', type=str, help="Move only these extensions (e.g. -s 'png,jpg')")
+    parser.add_argument('-a', '--all', action='store_true', help="Create folder for each file extension")
+    parser.add_argument('-m', '--map', type=str, help="Custom mapping (e.g. 'images:jpg,png')")
+    parser.add_argument('-t', '--add-type', type=str, help="Add new mappings to user file types")
+    parser.add_argument('-v', '--version', action='store_true', help="Show version info and exit")
+    parser.add_argument('-sk', '--show-keys', action='store_true', help="Show category keys in FILE_TYPES")
+    parser.add_argument('--reset-types', action='store_true', help='Reset all user-added file type mappings.')
+    parser.add_argument('--show-log', action='store_true', help='Display the command log history.')
 
     args = parser.parse_args()
+    selected_extensions = [ext.strip() for ext in args.select.split(',')] if args.select else []
 
-    # Parse selected extensions if provided
-    selected_extensions = []
-    if args.select:
-        selected_extensions = [ext.strip() for ext in args.select.split(',')]
+    # Load file types from DEFAULT and USER files
+    default_path = config_filepath.get("DEFAULT_FILE_TYPES", fallback_file_path_of_FileType)
+    user_path = config_filepath.get("USER_MODIFIED_FILE_TYPES", "USER_MODIFIED_FILE_TYPES.json")
+    default_types = FileAccess(default_path, True).read_json()
+    user_types = FileAccess(user_path, True).read_json()
 
-    # If custom directory-extension mapping is provided, map it
-    if args.map:
-        try:        
+    # Merge defaults + user-added types
+    merged_types = default_types.copy()
+    for k, v in user_types.items():
+        merged_types.setdefault(k, [])
+        for ext in v:
+            if ext not in merged_types[k]:
+                merged_types[k].append(ext)
+
+    organizer = FileOrganised(merged_types)
+
+    if args.version:
+        print(VERSION_INFO)
+    elif args.show_keys:
+        print("Categories:", list(merged_types.keys()))
+        print(f"Total: {len(merged_types)}")
+    elif args.add_type:
+        try:
+            new_map = eval(args.add_type, {"__builtins__": {}})
+            user_file = FileAccess(user_path, True)
+            current = user_file.read_json()
+            for k, v in new_map.items():
+                if isinstance(v, str):
+                    v = [v]
+                current.setdefault(k, [])
+                current[k].extend(ext for ext in v if ext not in current[k])
+            user_file.write_json(current)
+            print("✅ New types added.")
+        except Exception as e:
+            print(f"❌ Invalid --add-type input: {e}")
+    elif args.map:
+        try:
             mapping = map_directory_to_extensions(args.map)
+            FileOrganised(mapping).organize_files(args.location, selected_extensions, args.all)
         except:
-            print("ErrorType : Invalid Syntax for mapping input.")
-        if mapping:
-            # Create the FileOrganised object with the mapped extensions
-            organizer = FileOrganised(mapping)
-            organizer.organize_files(args.location, selected_extensions, args.all)
+            print("❌ Error parsing mapping input.")
+
+    # --reset-types
+    elif args.reset_types:
+        user_file = FileAccess(user_path, True)
+        user_file.write_json({})
+        print("🗑️  Cleared all user-added FILE_TYPE mappings.")
+
+    # --show-log
+    elif args.show_log:
+        log_file = config_filepath.get("MAPPING_HISTORY", "mapping_log.csv")
+        if not os.path.exists(log_file):
+            print("📂 No log file found.")
         else:
-            print("ErrorType : Invalid Syntax for mapping input.")
+            with open(log_file, mode='r', encoding='utf-8') as csvfile:
+                print("\n📝 Command Log History:")
+                for line in csvfile:
+                    print("  " + line.strip())
+
     else:
-        # If no mapping is provided, use the default file types
-        organizer = FileOrganised(FILE_TYPES)
         organizer.organize_files(args.location, selected_extensions, args.all)
+
+    # Log the full command string
+    log_command_entry(" ".join(sys.argv))
 
 try:
     main()
 except Exception as e:
     print(f"Error: {e}")
+
