@@ -25,7 +25,7 @@
     "filepath": {
       "DEFAULT_FILE_TYPES": "FILE_TYPES.json",
       "USER_MODIFIED_FILE_TYPES":"USER_MODIFIED_FILE_TYPES.json",
-      "MAPPING_HISTORY": "mapping_log.json",
+      "MAPPING_HISTORY": "mapping_log.json"
     }
   }
 ]
