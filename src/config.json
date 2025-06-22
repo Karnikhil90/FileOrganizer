@@ -1,0 +1,31 @@
+[
+  {
+    "name": "FileOrganizer",
+    "description": "A smart utility to organize files based on extension, category, or custom mapping.",
+    "version": "2.2",
+    "author": "Nikhil Karmakar",
+    "license": "MIT",
+    
+    "settings": {
+
+      "logging": true,
+      "log_file": "organizer.log",
+      "case_insensitive": true,
+      "skip_hidden_files": true,
+      "conflict_handling": "rename"
+    },
+
+    "features": {
+      "custom_mapping_enabled": true,
+      "dynamic_type_extension": true,
+      "reboot_after_install": false,
+      "path_append_during_setup": true
+    },
+
+    "filepath": {
+      "DEFAULT_FILE_TYPES": "FILE_TYPES.json",
+      "USER_MODIFIED_FILE_TYPES":"USER_MODIFIED_FILE_TYPES.json",
+      "MAPPING_HISTORY": "mapping_log.json",
+    }
+  }
+]
