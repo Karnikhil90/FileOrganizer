@@ -1,6 +1,6 @@
 """
 ===========================
-    setup -v2[for windows]
+    setup -v2
 ===========================
 File Organizer Setup Script
 ===========================
@@ -38,11 +38,18 @@ import shutil
 import platform
 
 # Configuration constants
-CONFIG : dict[str,any]= {
-    'CURRENT_VERSION': 'FileOrganizer_21',
+CONFIG : dict[str , list | str]= {
+    "name": "setup_windows",
+    "version": "2.0.0",
+    'AUTHOR': 'Nikhil Karmakar',
+    'EMAIL': 'nikhilbroo@hotmail.com',
+    'DESCRIPTION': 'File Organizer Setup Script',
+    'LICENSE': 'MIT',
+    'CURRENT_VERSION': 'FileOrganizer_v22',
     'OLD_VERSIONS': [
         'FileOrganizer - v1.0',
         'FileOrganizer_v2',
+        'FileOrganizer_21'
     ],
     'SOFTWARE_DIR': 'bin',
     'UTIL_FILE': 'util',
