@@ -32,18 +32,15 @@ Overview:
 
 In summary, this script ensures simple version updates and extensibility without requiring code modifications for each new release.
 """
-import os
-import sys
-import shutil
-import platform
+import os , sys , shutil , platform
 
 # Configuration constants
 CONFIG : dict[str , list | str]= {
     "name": "setup_windows",
-    "version": "2.0.0",
-    'AUTHOR': 'Nikhil Karmakar',
-    'EMAIL': 'nikhilbroo@hotmail.com',
-    'DESCRIPTION': 'File Organizer Setup Script',
+    "version": "2.0.1",
+    'author': 'Nikhil Karmakar',
+    'email': 'nikhilbroo@hotmail.com',
+    'description': 'File Organizer Setup Script',
     'LICENSE': 'MIT',
     'CURRENT_VERSION': 'FileOrganizer_v22',
     'OLD_VERSIONS': [
