@@ -158,7 +158,7 @@ class FileAccess:
             print(f"Error reading file as string: {e}")
             return ""
 
-    def read_json(self) -> list:
+    def read_json(self) -> list | dict:
         file_path = self.file_address
         try:
             with open(file_path, 'r') as file:
