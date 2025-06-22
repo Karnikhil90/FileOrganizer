@@ -1,0 +1,28 @@
+{
+  "name": "file-organizer",
+  "version": "2.2.0",
+  "description": "FileOrganizer CLI – A utility to organize files by type, mapping, and custom logic with logging support.",
+  "author": "Nikhil Karmakar",
+  "license": "MIT",
+  "keywords": [
+    "file-organizer",
+    "cli",
+    "automation",
+    "python",
+    "file-sorter"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Karnikhil90/FileOrganizer.git"
+  },
+  "scripts": {
+    "start": "python FO.py",
+    "log": "python FO.py --show-log",
+    "reset": "python FO.py --reset-types",
+    "commit": "python FO.py --commit"
+  },
+  "bugs": {
+    "url": "https://github.com/Karnikhil90/FileOrganizer/issues"
+  },
+  "homepage": "https://github.com/Karnikhil90/FileOrganizer#readme"
+}
