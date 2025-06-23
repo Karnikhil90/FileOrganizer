@@ -142,7 +142,7 @@ def cheak_FileType_json(file_type:dict={})-> bool:
     
 
 def log_command_entry(command: str):
-    print('log_command_entry')
+    # print('log_command_entry')
     log_file = config_filepath.get("MAPPING_HISTORY", "mapping_log.csv")
     
     log_dir = os.path.dirname(log_file)
@@ -166,11 +166,11 @@ def main():
     parser.add_argument('-s', '--select', type=str, help="Move only these extensions (e.g. -s 'png,jpg')")
     parser.add_argument('-a', '--all', action='store_true', help="Create folder for each file extension")
     parser.add_argument('-v', '--version', action='store_true', help="Show version info and exit")
-    parser.add_argument('-t', '--add-type', type=str, help="Add new mappings to user file types")
+    parser.add_argument('-t', '--add-type', type=str, help="Add new mappings to user file types (e.g. 'my_space:exe,json,png')")
     parser.add_argument('-m', '--map', type=str, help="Custom mapping (e.g. 'images:jpg,png')")
-    parser.add_argument('-sk', '--show-keys', action='store_true', help="Show category keys in FILE_TYPES")
-    parser.add_argument('--reset-types', action='store_true', help='Reset all user-added file type mappings.')
-    parser.add_argument('--show-log', action='store_true', help='Display the command log history.')
+    parser.add_argument('-sk', '--show-keys', action='store_true', help="Show all category keys currently defined in FILE_TYPES")
+    parser.add_argument('--reset-types', action='store_true', help='Reset all user-added file type mappings (clears USER_MODIFIED_FILE_TYPES.json)')
+    parser.add_argument('--show-log', action='store_true', help='Display the CLI command log history from mapping_log.csv')
 
     args = parser.parse_args()
     selected_extensions = [ext.strip() for ext in args.select.split(',')] if args.select else []
