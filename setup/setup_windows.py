@@ -33,9 +33,11 @@ Overview:
 In summary, this script ensures simple version updates and extensibility without requiring code modifications for each new release.
 """
 import os , sys , shutil , platform
+import tkinter as tk
+from tkinter import messagebox
 
 # Configuration constants
-CONFIG : dict[str , list | str]= {
+CONFIG : dict[str , list[str] | str]= {
     "name": "setup_windows",
     "version": "2.0.1",
     'author': 'Nikhil Karmakar',
@@ -51,6 +53,13 @@ CONFIG : dict[str , list | str]= {
     'SOFTWARE_DIR': 'bin',
     'UTIL_FILE': 'util',
 }
+
+
+def ask_user()-> bool:
+    response = messagebox.askyesno("Confirmation", "Do you want to Reboot now?")
+    if response:
+        return True
+    return False
 
 def is_windows() -> bool:
     """Check if the current operating system is Windows."""
@@ -151,12 +160,9 @@ def add_bin_to_system_path(bin_dir: str) -> None:
 
 def prompt_for_reboot() -> None:
     """Prompt the user to reboot the system."""
-    response = input("Setup completed successfully. Would you like to reboot the system now? (y/n): ").strip().lower()
-    if response == 'y':
-        print("Rebooting the system...")
+    ask_for_reboot = ask_user()
+    if(ask_for_reboot):
         os.system("shutdown /r /t 0")  # Reboot immediately
-    else:
-        print("You can reboot later to apply changes.")
 
 def main() -> None:
     """Main function to run the setup."""
@@ -181,6 +187,8 @@ def main() -> None:
 
     # Prompt user for reboot
     prompt_for_reboot()
+    root = tk.Tk()
+    root.withdraw()
 
 if __name__ == '__main__':
     main()
