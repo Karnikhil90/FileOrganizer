@@ -1,9 +1,10 @@
-
-# FileOrganizer -v2.1
+# FileOrganizer - v2.2
 
 ## What does it do?
 
-FileOrganizer is a command-line tool designed to help you manage and organize your files efficiently. Whether you need to sort files by type, move them to different directories, or clean up your file system, FileOrganizer provides a simple yet powerful set of commands to streamline these tasks.
+**FileOrganizer** is a command-line tool designed to help you manage and organize your files efficiently. Whether you need to sort files by type, move them to different directories, or clean up your file system, FileOrganizer provides a simple yet powerful set of commands to streamline these tasks.
+
+---
 
 <p align="center"> 
 <em>Before running FileOrganizer</em>
@@ -14,96 +15,146 @@ FileOrganizer is a command-line tool designed to help you manage and organize yo
     <a href="util/after.png" target="_blank"> 
     <img src="util/after.png" width="120%" /> 
     </a> 
-</p> 
-<br>
+</p>
 
-### Example Usage
+---
 
-#### 1. Organizing by location:
-To organize all files in the specified directory:
+## ⚙️ Example Usage
+
+### 1️⃣ Organize Files by Location
+Organizes all supported file types into folders from the given location:
 
 ```bash
 FO -l D:\\Downloads
-```
+````
 
-This command will list and organize all files in the `D:\\Downloads` directory based on predefined categories such as images, documents, videos, and more.
+Creates folders like `images/`, `documents/`, `videos/`, etc., and sorts files accordingly.
 
 <p align="center">
   <img src="util/run.png" width="120%" />
-</p><br>
+</p>
 
-#### 2. Organizing specific file types:
-You can specify which file types to organize using the `-s` argument. For example, to organize only `.exe` and `.png` files:
+---
+
+### 2️⃣ Organize Only Specific Extensions
+
+Organize selected extensions only (e.g., `.exe`, `.jpg`):
 
 ```bash
 FO -l D:\\Downloads -s exe,jpg
 ```
+
+Creates only the required folders like `exe/` and `jpg/`.
+
 <p align="center">
-  <a href="./util/TargetedExtSorter/run.png" target="_blank"> 
-    <img src="./util/TargetedExtSorter/run.png" width="120%" /> 
-    </a> 
-</p><br>
+  <img src="./util/TargetedExtSorter/run.png" width="120%" />
+</p>
 
-This command will create folders named `exe/` and `jpg/` in the specified directory and move all `.exe` and `.jpg` files into their respective folders.
+---
 
-<p align="center"> 
-<em>Before using `-s` option</em>
-    <a href="./util/TargetedExtSorter/before.png" target="_blank"> 
-    <img src="./util/TargetedExtSorter/before.png" width="120%" /> 
-    </a> 
-<em>After using `-s` option</em> 
-    <a href="util/TargetedExtSorter/after.png" target="_blank"> 
-    <img src="util/TargetedExtSorter/after.png" width="120%" /> 
-    </a> 
-</p> 
-<br>
+### 3️⃣ Auto-Folder for Every Extension
 
-#### 3. Creating folders for each extension:
-If you want to create a new folder for every unique file extension in the directory, use the `-a` argument:
+Auto-creates a folder for each **unique extension** found:
 
 ```bash
 FO -l D:\\Downloads -a
 ```
-<p align="center">
-  <a href="./util/AutoExtFolders/run.png" target="_blank"> 
-    <img src="./util/AutoExtFolders/run.png" width="120%" /> 
-    </a> 
-</p><br>
 
-This command will organize every file in the specified directory by its extension, placing each file type in its own folder (e.g., `txt/`, `jpg/`, `mp3/`, etc.).
+Useful for general cleanup by extension type.
+
+<p align="center">
+  <img src="./util/AutoExtFolders/run.png" width="120%" />
+</p>
+
+---
+
+### 4️⃣ Custom Mapping for Extensions
+
+You can move specific extensions to a **custom folder name**:
+
+```bash
+FO -m "school_data:pdf"
+```
+
+Moves all `.pdf` files to a folder named `school_data/`.
 
 <p align="center"> 
-<em>Before using `-a` option</em>
-    <a href="./util/AutoExtFolders/before.png" target="_blank"> 
-    <img src="./util/AutoExtFolders/before.png" width="120%" /> 
-    </a> 
-<em>After using `-a` option</em> 
-    <a href="./util/AutoExtFolders/after.png" target="_blank"> 
-    <img src="./util/AutoExtFolders/after.png" width="120%" /> 
-    </a> 
-</p> 
-<br>
+    <img src="./util/map/run_map_pdf.png" width="120%" />
+</p>
 
-### Additional Commands
+---
 
-- `FO -h`: Show help information and available commands.
+### 5️⃣ Show or Modify File Type Categories
 
-## Download and Installation
+🔸 **Show current folder types (keys)**:
+
+```bash
+FO -sk
+```
+
+🔸 **Add new types dynamically**:
+
+```bash
+FO -t "courses:mp4,avi"
+```
+
+🔸 **Reset all user-added types**:
+
+```bash
+FO --reset-types
+```
+
+<p align="center"> 
+    <img src="./util/user_modification_of_keys/remove_added_keys.png" width="120%" />
+</p>
+
+---
+
+### 6️⃣ View Command History Log
+
+You can see all commands you've used (with timestamps):
+
+```bash
+FO --show-log
+```
+
+<p align="center"> 
+    <img src="./util/show_logs/commad_history.png" width="120%" />
+</p>
+
+---
+
+## 🔧 Additional Commands
+
+| Command            | Description                                  |
+| ------------------ | -------------------------------------------- |
+| `FO -h`            | Show help information and available commands |
+| `FO --reset-types` | Reset all user-added mappings to default     |
+| `FO --show-log`    | Show command history (CSV-style)             |
+| `FO --commit`      | Git commit from CLI (internal dev use)       |
+
+---
+
+## 📦 Download and Installation
 
 You can download the latest release from the [Release Versions](https://github.com/karnikhil90/FileOrganizer/releases) page.
 
-For regular updates, visit the [Tags](https://github.com/karnikhil90/FileOrganizer/tags) section of the repository.
+For version history, check [Tags](https://github.com/karnikhil90/FileOrganizer/tags).
 
-## License
+---
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## 📄 License
 
-## About Me
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file.
 
-Self-taught coder | Still Learning | Fluent in Java❤️ & Python | C/C++, Rust, & Basic Web Development | Passionate about Embedded Systems ❤️
+---
 
-### Connect with Me
+## 👨‍💻 About Me
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/karnikhil90/)
-[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://x.com/karnikhil90)
-[![Social Media](https://img.shields.io/badge/Social%20Media-000000?style=for-the-badge&logo=google&logoColor=white)](https://linktr.ee/karnikhil90)
+Self-taught coder | Still Learning | Fluent in Java❤️ & Python | C/C++, Rust, & Basic Web Dev | Passionate about Embedded Systems ❤️
+
+### 🌐 Connect with Me
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge\&logo=linkedin\&logoColor=white)](https://www.linkedin.com/in/karnikhil90/)
+[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge\&logo=twitter\&logoColor=white)](https://x.com/karnikhil90)
+[![Social Media](https://img.shields.io/badge/Social%20Media-000000?style=for-the-badge\&logo=google\&logoColor=white)](https://linktr.ee/karnikhil90)
