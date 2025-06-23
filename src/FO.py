@@ -38,7 +38,8 @@ config_file_path= "config.json"
 
 
 file = FileAccess(config_file_path,True)
-config_:dict = file.read_json()
+config_:dict = file.read_json()[0]
+# print(config_)
 config_filepath = config_.get("filepath",{})
 file_path_of_FileType = config_filepath.get("DEFAULT_FILE_TYPES", fallback_file_path_of_FileType)
 
@@ -130,14 +131,23 @@ def map_directory_to_extensions(user_input : str) -> dict[str:list[str]] | bool:
     if ':' not in user_input : return False
     directory, file_types = user_input.split(':')
     return {directory: file_types.split(',')}
+
+
+# It cheaks that @param file_type:dict is not emplty
 def cheak_FileType_json(file_type:dict={})-> bool:
     size_of_keys = len(file_type.keys())
+    if size_of_keys > 0 and file_type: 
+        return True
+    return False
     
 
-
 def log_command_entry(command: str):
+    print('log_command_entry')
     log_file = config_filepath.get("MAPPING_HISTORY", "mapping_log.csv")
-    os.makedirs(os.path.dirname(log_file), exist_ok=True)
+    
+    log_dir = os.path.dirname(log_file)
+    if log_dir:
+        os.makedirs(log_dir, exist_ok=True)
 
     log_exists = os.path.isfile(log_file)
 
@@ -155,9 +165,9 @@ def main():
     parser.add_argument('-l', '--location', type=str, default='./', help="Specify directory to organize")
     parser.add_argument('-s', '--select', type=str, help="Move only these extensions (e.g. -s 'png,jpg')")
     parser.add_argument('-a', '--all', action='store_true', help="Create folder for each file extension")
-    parser.add_argument('-m', '--map', type=str, help="Custom mapping (e.g. 'images:jpg,png')")
-    parser.add_argument('-t', '--add-type', type=str, help="Add new mappings to user file types")
     parser.add_argument('-v', '--version', action='store_true', help="Show version info and exit")
+    parser.add_argument('-t', '--add-type', type=str, help="Add new mappings to user file types")
+    parser.add_argument('-m', '--map', type=str, help="Custom mapping (e.g. 'images:jpg,png')")
     parser.add_argument('-sk', '--show-keys', action='store_true', help="Show category keys in FILE_TYPES")
     parser.add_argument('--reset-types', action='store_true', help='Reset all user-added file type mappings.')
     parser.add_argument('--show-log', action='store_true', help='Display the command log history.')
@@ -168,16 +178,18 @@ def main():
     # Load file types from DEFAULT and USER files
     default_path = config_filepath.get("DEFAULT_FILE_TYPES", fallback_file_path_of_FileType)
     user_path = config_filepath.get("USER_MODIFIED_FILE_TYPES", "USER_MODIFIED_FILE_TYPES.json")
-    default_types = FileAccess(default_path, True).read_json()
-    user_types = FileAccess(user_path, True).read_json()
+    default_types:dict = FileAccess(default_path, True).read_json()
+    user_types:dict = FileAccess(user_path, True).read_json()
+    user_types = user_types if isinstance(user_types, dict) else {}
 
     # Merge defaults + user-added types
     merged_types = default_types.copy()
-    for k, v in user_types.items():
-        merged_types.setdefault(k, [])
-        for ext in v:
-            if ext not in merged_types[k]:
-                merged_types[k].append(ext)
+    if user_types:
+        for k, v in user_types.items():
+            merged_types.setdefault(k, [])
+            for ext in v:
+                if ext not in merged_types[k]:
+                    merged_types[k].append(ext)
 
     organizer = FileOrganised(merged_types)
 
@@ -188,16 +200,24 @@ def main():
         print(f"Total: {len(merged_types)}")
     elif args.add_type:
         try:
-            new_map = eval(args.add_type, {"__builtins__": {}})
+            # Parse input like: 'images:webp,avif'
+            new_map = map_directory_to_extensions(args.add_type)
+
+            if not new_map:
+                raise ValueError("Invalid format. Use 'category:ext1,ext2'")
+
             user_file = FileAccess(user_path, True)
             current = user_file.read_json()
+            current = current if isinstance(current, dict) else {}
+
             for k, v in new_map.items():
-                if isinstance(v, str):
-                    v = [v]
                 current.setdefault(k, [])
-                current[k].extend(ext for ext in v if ext not in current[k])
+                for ext in v:
+                    if ext not in current[k]:
+                        current[k].append(ext)
+
             user_file.write_json(current)
-            print("✅ New types added.")
+            print("✅ New types added to user file.")
         except Exception as e:
             print(f"❌ Invalid --add-type input: {e}")
     elif args.map:
@@ -233,5 +253,5 @@ def main():
 try:
     main()
 except Exception as e:
-    print(f"Error: {e}")
+    print(f"Error(main): {e}")
 
