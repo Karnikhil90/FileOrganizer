@@ -9,6 +9,7 @@ setup.py
 # test and processed data
 *.spec
 *.exe
+*.bat
 test
 # python - cache memory
 __pycache__
