@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FileOrganizer - v2.2</title>
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+
+    h1, h2, h3 {
+      color: #00d8ff;
+    }
+
+    a {
+      color: #64b5f6;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    code {
+      background-color: #2d2d2d;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      color: #ffd700;
+    }
+
+    pre {
+      background-color: #2d2d2d;
+      padding: 1rem;
+      overflow-x: auto;
+      border-left: 5px solid #00d8ff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      border: 1px solid #444;
+      padding: 0.8rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: #333;
+      color: #fff;
+    }
+
+    tr:nth-child(even) {
+      background-color: #2a2a2a;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #555;
+      margin: 2rem 0;
+    }
+
+    img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
+
+    em {
+      color: #9cdcfe;
+      font-style: italic;
+    }
+
+    .center {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<h1 id="fileorganizer-v2-2">FileOrganizer - v2.2</h1>
+<h2 id="what-does-it-do-">What does it do?</h2>
+<p><strong>FileOrganizer</strong> is a command-line tool designed to help you manage and organize your files efficiently...</p>
+<hr>
+
+<div class="center">
+  <em>Before running FileOrganizer</em><br>
+  <a href="./util/before.png" target="_blank"><img src="./util/before.png" /></a><br>
+  <em>After running FileOrganizer</em><br>
+  <a href="./util/after.png" target="_blank"><img src="./util/after.png" /></a>
+</div>
+
+<hr>
+<h2>⚙️ Example Usage</h2>
+
+<h3>1️⃣ Organize Files by Location</h3>
+<p>Organizes all supported file types into folders from the given location:</p>
+<pre><code>FO -l D:\Downloads</code></pre>
+<p>Creates folders like <code>images/</code>, <code>documents/</code>, <code>videos/</code>, etc.</p>
+<div class="center"><img src="util/run.png" /></div>
+
+<hr>
+<h3>2️⃣ Organize Only Specific Extensions</h3>
+<pre><code>FO -l D:\Downloads -s exe,jpg</code></pre>
+<p>Creates only the required folders like <code>exe/</code> and <code>jpg/</code>.</p>
+<div class="center"><img src="./util/TargetedExtSorter/run.png" /></div>
+
+<hr>
+<h3>3️⃣ Auto-Folder for Every Extension</h3>
+<pre><code>FO -l D:\Downloads -a</code></pre>
+<p>Auto-creates a folder for each <strong>unique extension</strong> found.</p>
+<div class="center"><img src="./util/AutoExtFolders/run.png" /></div>
+
+<hr>
+<h3>4️⃣ Custom Mapping for Extensions</h3>
+<pre><code>FO -m "school_data:pdf"</code></pre>
+<p>Moves all <code>.pdf</code> files to a folder named <code>school_data/</code>.</p>
+<div class="center"><img src="./util/map/run_map_pdf.png" /></div>
+
+<hr>
+<h3>5️⃣ Show or Modify File Type Categories</h3>
+<p><strong>Show current folder types:</strong></p>
+<pre><code>FO -sk</code></pre>
+<p><strong>Add new types dynamically:</strong></p>
+<pre><code>FO -t "courses:mp4,avi"</code></pre>
+<p><strong>Reset user-added types:</strong></p>
+<pre><code>FO --reset-types</code></pre>
+<div class="center"><img src="./util/user_modification_of_keys/remove_added_keys.png" /></div>
+
+<hr>
+<h3>6️⃣ View Command History Log</h3>
+<pre><code>FO --show-log</code></pre>
+<div class="center"><img src="./util/show_logs/commad_history.png" /></div>
+
+<hr>
+<h2>🔧 Additional Commands</h2>
+<table>
+  <thead>
+    <tr><th>Command</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>FO -h</code></td><td>Show help info and available commands</td></tr>
+    <tr><td><code>FO --reset-types</code></td><td>Reset all user-added mappings to default</td></tr>
+    <tr><td><code>FO --show-log</code></td><td>Show command history (CSV-style)</td></tr>
+    <tr><td><code>FO --commit</code></td><td>Git commit from CLI (internal dev use)</td></tr>
+  </tbody>
+</table>
+
+<hr>
+<h2>📦 Download and Installation</h2>
+<p>Download from <a href="https://github.com/karnikhil90/FileOrganizer/releases">Release Versions</a>.</p>
+<p>See all versions in <a href="https://github.com/karnikhil90/FileOrganizer/tags">Tags</a>.</p>
+
+<hr>
+<h2>📄 License</h2>
+<p>MIT License – see the <a href="LICENSE">LICENSE</a> file.</p>
+
+<hr>
+<h2>👨‍💻 About Me</h2>
+<p>Self-taught coder | Fluent in Java ❤️ & Python | Rust, C/C++ & Basic Web Dev | Embedded Systems ❤️</p>
+<h3>🌐 Connect with Me</h3>
+<p>
+  <a href="https://www.linkedin.com/in/karnikhil90/"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
+  <a href="https://x.com/karnikhil90"><img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" alt="Twitter"></a>
+  <a href="https://linktr.ee/karnikhil90"><img src="https://img.shields.io/badge/Social%20Media-000000?style=for-the-badge&logo=google&logoColor=white" alt="Social Media"></a>
+</p>
+
+</body>
+</html>
